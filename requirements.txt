@@ -1,0 +1,11 @@
+# requirements.txt
+feedparser
+newsapi-python
+ollama
+pandas
+requests
+streamlit
+pycoingecko
+plotly
+python-dotenv
+beautifulsoup4
