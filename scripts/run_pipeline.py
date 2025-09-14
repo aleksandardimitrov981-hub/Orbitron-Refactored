@@ -15,18 +15,26 @@ from src.data_ingestion.newsapi_client import NewsApiClient
 from src.data_ingestion.coingecko_client import CoinGeckoClient
 from src.analysis.ai_analyzer import AIAnalyzer
 
-# --- Константи, които можем лесно да променяме ---
-GENERAL_NEWS_KEYWORDS = ['crypto', 'bitcoin', 'ethereum', 'solana', 'ripple', 'blockchain']
+# --- Промени в константите ---
+# V V V ПРЕМАХВАМЕ ТАЗИ ПРОМЕНЛИВА, ВЕЧЕ НЕ НИ ТРЯБВА V V V
+# GENERAL_NEWS_KEYWORDS = ['crypto', 'bitcoin', 'ethereum', 'solana', 'ripple', 'blockchain']
+# ^ ^ ^ ПРЕМАХВАМЕ ТАЗИ ПРОМЕНЛИВА, ВЕЧЕ НЕ НИ ТРЯБВА ^ ^ ^
 ECONOMIC_NEWS_KEYWORDS = ['inflation', 'interest rate', 'GDP', 'FOMC', 'unemployment']
 
 def run_news_pipeline(db_manager, news_api_client):
     """Изпълнява целия процес по събиране и запазване на новини."""
     print("\n--- 📰 STEP 1: COLLECTING NEWS ---")
     rss_articles = fetch_rss_articles()
-    general_articles = news_api_client.fetch_general_news(GENERAL_NEWS_KEYWORDS)
+
+    # V V V ЕТО ТУК Е ОСНОВНАТА ПРОМЯНА V V V
+    # Вместо общи новини, викаме новия метод за целенасочено търсене по активи
+    asset_articles = news_api_client.fetch_asset_news()
+    # ^ ^ ^ ЕТО ТУК Е ОСНОВНАТА ПРОМЯНА ^ ^ ^
+    
     economic_articles = news_api_client.fetch_economic_news(ECONOMIC_NEWS_KEYWORDS)
 
-    all_articles = rss_articles + general_articles + economic_articles
+    # Обновяваме списъка, за да включва новите asset_articles
+    all_articles = rss_articles + asset_articles + economic_articles
 
     # Премахваме дубликати по URL
     unique_articles = list({article['url']: article for article in all_articles if article.get('url')}.values())
@@ -35,10 +43,12 @@ def run_news_pipeline(db_manager, news_api_client):
         rows_saved = db_manager.save_articles(unique_articles)
         print(f"💾 Found {len(unique_articles)} unique articles. Saved {rows_saved} new ones to the database.")
 
+# --- ОСТАНАЛАТА ЧАСТ ОТ ФАЙЛА ОСТАВА НАПЪЛНО СЪЩАТА ---
+
 def run_ai_analysis_pipeline(db_manager, ai_analyzer):
     """Изпълнява процеса по анализ на нови статии."""
     print("\n--- 🧠 STEP 2: RUNNING AI ANALYSIS ---")
-    unprocessed_articles = db_manager.get_unprocessed_articles(limit=5)
+    unprocessed_articles = db_manager.get_unprocessed_articles(limit=30) # Можем да увеличим лимита
 
     if not unprocessed_articles:
         print("No new articles to analyze.")
@@ -46,12 +56,13 @@ def run_ai_analysis_pipeline(db_manager, ai_analyzer):
 
     print(f"Found {len(unprocessed_articles)} unprocessed articles. Starting AI analysis...")
     for article in unprocessed_articles:
+        # Проверяваме дали категорията е 'economic_event' ИЛИ име на актив
         is_economic = article.get('category') == 'economic_event'
         analysis = ai_analyzer.analyze_article_title(article['title'], is_economic=is_economic)
 
         if analysis:
             db_manager.update_article_analysis(article['id'], analysis)
-            print(f"   -> ✅ AI analysis for article #{article['id']} saved.")
+            print(f"   -> ✅ AI analysis for article #{article['id']} '{article['title'][:30]}...' saved.")
 
 def run_market_data_pipeline(db_manager, coingecko_client):
     """Изпълнява процеса по събиране на пазарни данни."""
@@ -81,7 +92,7 @@ def run_market_data_pipeline(db_manager, coingecko_client):
 
 def main():
     """Главната функция, която дирижира целия процес."""
-    print("🚀🚀🚀 ORBITRON REFACTORED - STARTING FULL PIPELINE 🚀🚀🚀")
+    print("🚀🚀🚀 ORBITRON AI - STARTING FULL PIPELINE 🚀🚀🚀")
 
     db_manager = DatabaseManager()
     news_api_client = NewsApiClient()

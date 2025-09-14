@@ -43,18 +43,18 @@ if market_data.empty:
     st.stop()
 
 # --- Контроли в страничната лента ---
-
-# V V V ЕТО ТУК Е ДОБАВКАТА ЗА ЛОГОТО V V V
-st.sidebar.image("assets/logo.png", use_container_width=True)
-# ^ ^ ^ ЕТО ТУК Е ДОБАВКАТА ЗА ЛОГОТО ^ ^ ^
-
+st.sidebar.image("assets/logo.png", use_container_width=True) # <-- Поправка на use_column_width
 st.sidebar.header("Настройки на Анализа")
 selected_asset_name = st.sidebar.selectbox("Избери Актив:", ASSET_NAMES)
 selected_asset_id = ASSETS_TO_TRACK[selected_asset_name]
 
 # --- Филтриране на данните ---
 asset_market_data = market_data[market_data['asset_id'] == selected_asset_id].copy()
-asset_news_data = news_data[news_data['title'].str.contains(selected_asset_name.split('-')[0], case=False, na=False)].copy()
+
+# V V V ЕТО ТУК Е ВАЖНАТА ПРОМЯНА V V V
+# Вече филтрираме по точната категория, която зададохме в newsapi_client
+asset_news_data = news_data[news_data['category'] == selected_asset_name].copy()
+# ^ ^ ^ ЕТО ТУК Е ВАЖНАТА ПРОМЯНА ^ ^ ^
 
 if asset_market_data.empty:
     st.warning(f"Няма пазарни данни за '{selected_asset_name}'.")
