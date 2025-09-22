@@ -9,9 +9,13 @@ load_dotenv()
 NEWSAPI_API_KEY = os.getenv("NEWSAPI_API_KEY")
 FINNHUB_API_KEY = os.getenv("FINNHUB_API_KEY")
 
+# --- ТУК Е ДОБАВКАТА ---
+KUCOIN_API_KEY = os.getenv("KUCOIN_API_KEY")
+KUCOIN_API_SECRET = os.getenv("KUCOIN_API_SECRET")
+KUCOIN_API_PASSPHRASE = os.getenv("KUCOIN_API_PASSPHRASE")
+# -------------------------
+
 # --- Пътища ---
-# __file__ е текущият файл (config.py)
-# os.path.dirname() взима папката, в която се намира
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 DATABASE_PATH = os.path.join(BASE_DIR, "data", "orbitron_db.sqlite")
 
