@@ -33,6 +33,10 @@ def load_data():
     if not market_df.empty:
         market_df['date'] = pd.to_datetime(market_df['date'])
     
+    if not news_df.empty:
+        # Превръщаме published_at в дата, като грешките стават NaT (Not a Time)
+        news_df['published_at'] = pd.to_datetime(news_df['published_at'], errors='coerce', utc=True)
+    
     return news_df, market_df
 
 # --- Зареждане на данните ---
@@ -43,7 +47,8 @@ if market_data.empty:
     st.stop()
 
 # --- Контроли в страничната лента ---
-st.sidebar.image("assets/logo.png", use_container_width=True) # <-- Поправка на use_column_width
+if os.path.exists("assets/logo.png"):
+    st.sidebar.image("assets/logo.png", use_container_width=True)
 st.sidebar.header("Настройки на Анализа")
 selected_asset_name = st.sidebar.selectbox("Избери Актив:", ASSET_NAMES)
 selected_asset_id = ASSETS_TO_TRACK[selected_asset_name]
@@ -51,10 +56,8 @@ selected_asset_id = ASSETS_TO_TRACK[selected_asset_name]
 # --- Филтриране на данните ---
 asset_market_data = market_data[market_data['asset_id'] == selected_asset_id].copy()
 
-# V V V ЕТО ТУК Е ВАЖНАТА ПРОМЯНА V V V
-# Вече филтрираме по точната категория, която зададохме в newsapi_client
-asset_news_data = news_data[news_data['category'] == selected_asset_name].copy()
-# ^ ^ ^ ЕТО ТУК Е ВАЖНАТА ПРОМЯНА ^ ^ ^
+search_pattern = selected_asset_name.split('-')[0]
+asset_news_data = news_data[news_data['title'].str.contains(search_pattern, case=False, na=False)].copy()
 
 if asset_market_data.empty:
     st.warning(f"Няма пазарни данни за '{selected_asset_name}'.")
@@ -112,7 +115,6 @@ else:
         st.info("Няма достатъчно позитивни или негативни новини за формиране на ясна обосновка.")
 
     st.subheader("Ключови теми от последните новини")
-    asset_news_data['published_at'] = pd.to_datetime(asset_news_data['published_at'], errors='coerce', utc=True)
     recent_news = asset_news_data.sort_values(by='published_at', ascending=False).head(5)
     
     for index, row in recent_news.iterrows():
@@ -128,7 +130,14 @@ if not asset_news_data.empty:
             st.markdown(f"**AI Резюме:** *{row['summary']}*")
             st.markdown(f"**AI Обосновка:** {row['reasoning']}")
             st.markdown(f"**AI Фактори:** {row['investment_factors']}")
-            st.markdown(f"**Източник:** {row['source']} | **Публикувано на:** {pd.to_datetime(row['published_at']).strftime('%Y-%m-%d %H:%M')}")
+            
+            # --- ТУК Е КОРЕКЦИЯТА ---
+            # Проверяваме дали датата е валидна (не е NaT), преди да я форматираме
+            published_time_str = "N/A"
+            if pd.notna(row['published_at']):
+                published_time_str = row['published_at'].strftime('%Y-%m-%d %H:%M')
+            
+            st.markdown(f"**Източник:** {row['source']} | **Публикувано на:** {published_time_str}")
             st.markdown(f"[Прочети цялата статия]({row['url']})")
 else:
     st.write("Няма намерени новини за този актив.")
