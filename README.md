@@ -208,7 +208,7 @@ ollama pull [model-name]
 ## 🤝 Support
 
 Имате въпроси или предложения?
-- 📧 **Email**: [your-email]
+- 📧 **Email**: [aleksandardimitrov981@gmail.com]
 - 💬 **Issues**: [GitHub Issues]
 - 📖 **Wiki**: [Detailed Documentation]
 
