@@ -235,7 +235,7 @@ ollama pull [model-name]
 
 ### 📞 Свържете се с нас
 📧 **Email**: [aleksandardimitrov981@gmail.com]  
-💬 **Issues**: [GitHub Issues](https://github.com/your-username/orbitron-ai/issues)  
+💬 **Issues**: [GitHub Issues](https://github.com/aleksandardimitrov981-hub/orbitron-ai/issues)  
 📖 **Wiki**: [Detailed Documentation](https://github.com/your-username/orbitron-ai/wiki)  
 💼 **LinkedIn**: [Your LinkedIn Profile]  
 
