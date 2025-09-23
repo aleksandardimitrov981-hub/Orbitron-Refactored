@@ -92,7 +92,7 @@ KUCOIN_API_PASSPHRASE=your_kucoin_passphrase_here
 
 # Ollama Configuration
 OLLAMA_HOST=localhost:11434
-OLLAMA_MODEL=llama2:7b
+OLLAMA_MODEL=llama3.2
 ```
 
 ### 3. Инициализация
@@ -234,7 +234,7 @@ ollama pull [model-name]
 <div align="center">
 
 ### 📞 Свържете се с нас
-📧 **Email**: [your-email@domain.com]  
+📧 **Email**: [aleksandardimitrov981@gmail.com]  
 💬 **Issues**: [GitHub Issues](https://github.com/your-username/orbitron-ai/issues)  
 📖 **Wiki**: [Detailed Documentation](https://github.com/your-username/orbitron-ai/wiki)  
 💼 **LinkedIn**: [Your LinkedIn Profile]  
