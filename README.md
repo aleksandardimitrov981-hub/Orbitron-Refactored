@@ -8,8 +8,34 @@
   [![Status](https://img.shields.io/badge/Status-Alpha-orange.svg)]()
   [![AI](https://img.shields.io/badge/AI-Ollama-purple.svg)](https://ollama.ai)
   
-  **Следете "умните пари" с AI-базиран пазарен анализ**
+  **Track the "Smart Money" with AI-powered market analysis**
+  
+  ---
+  
+  🌐 **Languages**: [English](#english) | [Български](#bulgarian)
+  
 </div>
+
+---
+
+## English
+
+### 🎯 What is Orbitron-AI?
+
+Orbitron-AI is an **intelligent platform** for cryptocurrency market analysis that uses advanced AI algorithms to track **"Smart Money"** - institutional investors, hedge funds, and large market participants whose actions often precede significant price movements.
+
+### 💡 Why is it different?
+- 🧠 **AI-powered analysis** via Ollama for deep market sentiment understanding
+- 📊 **Holistic approach**: 4-dimensional analysis (Fundamental + Technical + On-Chain + Sentiment)
+- ⚡ **Real-time intelligence**: Automated 24/7 data collection and processing
+- 📈 **Intuitive dashboard** with interactive visualization and alert system
+- 🔮 **Predictive analytics**: AI forecasts based on historical patterns
+
+---
+
+## Bulgarian
+
+### 🎯 Какво е Orbitron-AI?
 
 ## 📊 Live Demo & Screenshots
 
@@ -92,7 +118,7 @@ KUCOIN_API_PASSPHRASE=your_kucoin_passphrase_here
 
 # Ollama Configuration
 OLLAMA_HOST=localhost:11434
-OLLAMA_MODEL=llama3.2
+OLLAMA_MODEL=llama2:7b
 ```
 
 ### 3. Инициализация
@@ -234,7 +260,7 @@ ollama pull [model-name]
 <div align="center">
 
 ### 📞 Свържете се с нас
-📧 **Email**: [aleksandardimitrov981@gmail.com]  
+📧 **Email**: [your-email@domain.com]  
 💬 **Issues**: [GitHub Issues](https://github.com/your-username/orbitron-ai/issues)  
 📖 **Wiki**: [Detailed Documentation](https://github.com/your-username/orbitron-ai/wiki)  
 💼 **LinkedIn**: [Your LinkedIn Profile]  
