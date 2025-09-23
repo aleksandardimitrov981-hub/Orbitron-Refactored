@@ -1,13 +1,24 @@
 <div align="center">
   <img src="assets/logo.png" alt="Orbitron AI Logo" width="150">
+  <h1>🚀 Orbitron-AI</h1>
+  <h3>Intelligent Crypto Market Analysis Platform</h3>
+  
+  [![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
+  [![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
+  [![Status](https://img.shields.io/badge/Status-Alpha-orange.svg)]()
+  [![AI](https://img.shields.io/badge/AI-Ollama-purple.svg)](https://ollama.ai)
+  
+  **Следете "умните пари" с AI-базиран пазарен анализ**
 </div>
-# 🚀 Orbitron-AI: Intelligent Crypto Market Analysis Platform
 
-[![Python](https://img.shields.io/badge/Python-3.8+-blue.svg)](https://python.org)
-[![License](https://img.shields.io/badge/License-MIT-green.svg)](LICENSE)
-[![Status](https://img.shields.io/badge/Status-Alpha-orange.svg)]()
+## 📊 Live Demo & Screenshots
 
-**Следете "умните пари" с AI-базиран пазарен анализ**
+<div align="center">
+  <img src="assets/dashboard-preview.png" alt="Dashboard Preview" width="600">
+  <p><i>Orbitron-AI Dashboard - Real-time market intelligence</i></p>
+</div>
+
+> **💡 Pro Tip**: Планирате live demo? Добавете GIF или видео показващо dashboard-а в action!
 
 ---
 
@@ -147,15 +158,23 @@ streamlit run src/dashboard/app.py
 - [ ] Pattern matching система
 - [ ] Probabilistic forecasting
 
-### 🚀 Фаза 4: Advanced Features  
-- [ ] Trading simulation
-- [ ] Portfolio tracking
-- [ ] Multi-asset support
-- [ ] API за external integrations
-### 🌐 Фаза 5: Strategic Expansion (Визия)
-- [ ] **Финансов Модул:** Разширяване на обхвата за анализ на традиционни финансови инструменти (акции, индекси, форекс).
-- [ ] **Спортен Модул:** Проучване и разработка на нов модул за анализ и прогнозиране на спортни събития (футбол, висша лига Англия).
-- [ ] **Токенизация:** Проучване на възможностите за създаване на собствен токен за управление и достъп до платформата.
+### 🚀 Фаза 4: Production Ready
+- [ ] Advanced dashboard с custom charts
+- [ ] Multi-timeframe analysis
+- [ ] Portfolio tracking & risk management
+- [ ] REST API за external integrations
+- [ ] Docker containerization
+- [ ] Cloud deployment готовност
+
+### 🌟 Фаза 5: Enterprise & Innovation
+- [ ] **Machine Learning Pipeline**: Custom ML модели за price prediction
+- [ ] **Multi-Asset Support**: Stocks, Forex, Commodities expansion  
+- [ ] **Social Trading**: Copy-trading и signal sharing
+- [ ] **Mobile App**: iOS/Android companion app
+- [ ] **Institutional Features**: White-label solutions
+- [ ] **DeFi Integration**: Yield farming & liquidity analysis
+- [ ] **Research Platform**: Automated research reports
+
 ---
 
 ## 🛠️ Развитие
@@ -210,12 +229,29 @@ ollama pull [model-name]
 
 ---
 
-## 🤝 Support
+## 🤝 Community & Support
 
-Имате въпроси или предложения?
-- 📧 **Email**: [aleksandardimitrov981@gmail.com]
-- 💬 **Issues**: [GitHub Issues]
-- 📖 **Wiki**: [Detailed Documentation]
+<div align="center">
+
+### 📞 Свържете се с нас
+📧 **Email**: [your-email@domain.com]  
+💬 **Issues**: [GitHub Issues](https://github.com/your-username/orbitron-ai/issues)  
+📖 **Wiki**: [Detailed Documentation](https://github.com/your-username/orbitron-ai/wiki)  
+💼 **LinkedIn**: [Your LinkedIn Profile]  
+
+### 🌟 Show Your Support
+⭐ **Star the repo** ако Orbitron-AI ви помага!  
+🔄 **Share** с crypto community  
+🐛 **Report bugs** за по-добра платформа  
+💡 **Suggest features** за бъдещи версии  
+
+### 🏆 Contributors
+Благодарим на всички, които допринасят за развитието на Orbitron-AI!
+
+<!-- Contributors list will be auto-generated -->
+<img src="https://contrib.rocks/image?repo=your-username/orbitron-ai" />
+
+</div>
 
 ---
 
