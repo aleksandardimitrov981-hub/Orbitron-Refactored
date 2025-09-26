@@ -1,12 +1,9 @@
-# src/database/database_manager.py
-
 import sqlite3
-import logging # Променяме print() с logging за по-добър контрол върху съобщенията
+import logging
 from typing import List, Dict, Any
-from contextlib import contextmanager # Внасяме необходимия декоратор
+from contextlib import contextmanager
 from config import DATABASE_PATH
 
-# Настройваме базов logger, който ще записва съобщения с дата и час
 logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def dict_factory(cursor, row):
@@ -19,17 +16,9 @@ class DatabaseManager:
     def __init__(self, db_path=DATABASE_PATH):
         self.db_path = db_path
 
-    # --- НОВ МЕТОД: Контекстен мениджър ---
     @contextmanager
     def managed_connection(self):
-        """
-        Това е сърцето на нашия "ремонт". Този метод прави следното:
-        1. Отваря връзка към базата данни.
-        2. Предоставя я на 'with' блока, който го извиква (чрез 'yield').
-        3. Ако блокът завърши без грешки, той записва промените (conn.commit()).
-        4. Ако възникне грешка, той отменя промените (conn.rollback()).
-        5. Във всеки случай, накрая затваря връзката (conn.close()).
-        """
+        # ... (този код остава абсолютно същият) ...
         conn = None
         try:
             conn = sqlite3.connect(self.db_path)
@@ -40,22 +29,22 @@ class DatabaseManager:
             logging.error(f"Database error: {e}")
             if conn:
                 conn.rollback()
-            raise  # Повдигаме грешката, за да може извикващият код да знае за нея
+            raise
         finally:
             if conn:
                 conn.close()
 
-    # --- РЕФАКТОРИРАНИ МЕТОДИ ---
-    # Сега всички методи са много по-кратки и чисти.
+    # --- МЕТОДИ ЗА ЗАПИС И ИЗВЛИЧАНЕ ---
+    # Всички методи до тук остават същите. 
+    # Прескачам ги за краткост, за да стигнем до новия метод.
+    # ... save_articles, get_unprocessed_articles, update_article_analysis, etc. ...
 
     def execute_script(self, script_sql: str):
-        """Изпълнява SQL скрипт (например за създаване на таблици)."""
         try:
             with self.managed_connection() as conn:
                 conn.executescript(script_sql)
             logging.info("✅ SQL script executed successfully.")
         except sqlite3.Error as e:
-            # Грешката вече е логната в managed_connection, тук можем да добавим контекст
             logging.error(f"❌ Failed to execute SQL script: {e}")
 
     def save_articles(self, articles: List[Dict[str, Any]]):
@@ -71,7 +60,7 @@ class DatabaseManager:
                 cursor.executemany(sql, data_to_insert)
                 return cursor.rowcount
         except sqlite3.Error:
-            return 0 # Връщаме 0 при грешка
+            return 0
 
     def get_unprocessed_articles(self, limit: int = 5) -> List[Dict[str, Any]]:
         sql = "SELECT id, title, category FROM articles WHERE summary IS NULL ORDER BY fetched_at DESC LIMIT ?"
@@ -100,7 +89,50 @@ class DatabaseManager:
         except sqlite3.Error:
             return 0
 
+    def save_historical_prices(self, asset_symbol: str, klines: List[Dict[str, Any]]):
+        sql = """
+        INSERT OR REPLACE INTO historical_prices 
+        (asset_symbol, timestamp, open, high, low, close, volume) 
+        VALUES (:asset_symbol, :timestamp, :open, :high, :low, :close, :volume)
+        """
+        data_to_insert = []
+        for kline in klines:
+            record = kline.copy()
+            record['asset_symbol'] = asset_symbol
+            data_to_insert.append(record)
+        try:
+            with self.managed_connection() as conn:
+                cursor = conn.cursor()
+                cursor.executemany(sql, data_to_insert)
+                logging.info(f"✅ Успешно записани/обновени {cursor.rowcount} записа за {asset_symbol} в 'historical_prices'.")
+                return cursor.rowcount
+        except sqlite3.Error as e:
+            logging.error(f"❌ Грешка при запис на исторически данни за {asset_symbol}: {e}")
+            return 0
+
+    # --- ТУК Е ДОБАВЕН НОВИЯТ МЕТОД ЗА DEFI LLAMA ---
+    def save_chain_tvl_data(self, tvl_data: List[Dict[str, Any]]):
+        """
+        Записва или заменя TVL данни за различни блокчейн мрежи.
+        """
+        sql = """
+        INSERT OR REPLACE INTO chain_tvl_data 
+        (chain, timestamp, tvl) 
+        VALUES (:chain, :timestamp, :tvl)
+        """
+        # Данните от DefiLlamaHandler вече са в правилния формат
+        try:
+            with self.managed_connection() as conn:
+                cursor = conn.cursor()
+                cursor.executemany(sql, tvl_data)
+                logging.info(f"✅ Успешно записани/обновени {cursor.rowcount} TVL записа.")
+                return cursor.rowcount
+        except sqlite3.Error as e:
+            logging.error(f"❌ Грешка при запис на TVL данни: {e}")
+            return 0
+
     def get_latest_market_data_date(self, asset_id: str) -> str or None:
+        # ... (този код остава абсолютно същият) ...
         sql = "SELECT MAX(date) AS latest_date FROM market_data WHERE asset_id = ?"
         try:
             with self.managed_connection() as conn:
@@ -108,10 +140,10 @@ class DatabaseManager:
                 return result['latest_date'] if result and result['latest_date'] else None
         except sqlite3.Error:
             return None
-
-    # --- МЕТОДИ ЗА ДАШБОРДА (също рефакторирани) ---
-
+    
+    # --- МЕТОДИ ЗА ДАШБОРДА ---
     def get_all_analyzed_articles(self) -> List[Dict[str, Any]]:
+        # ... (този код остава абсолютно същият) ...
         sql = "SELECT * FROM articles WHERE sentiment IS NOT NULL ORDER BY published_at DESC"
         try:
             with self.managed_connection() as conn:
@@ -120,6 +152,7 @@ class DatabaseManager:
             return []
 
     def get_all_market_data(self) -> List[Dict[str, Any]]:
+        # ... (този код остава абсолютно същият) ...
         sql = "SELECT * FROM market_data ORDER BY date ASC"
         try:
             with self.managed_connection() as conn:
