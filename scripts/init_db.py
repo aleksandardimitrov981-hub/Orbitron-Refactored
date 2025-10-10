@@ -50,12 +50,24 @@ CREATE TABLE IF NOT EXISTS historical_prices (
     PRIMARY KEY (asset_symbol, timestamp)
 );
 
--- ЕТО Я И НОВАТА ТАБЛИЦА ЗА DEFI LLAMA --
 CREATE TABLE IF NOT EXISTS chain_tvl_data (
     chain TEXT NOT NULL,
     timestamp INTEGER NOT NULL,
     tvl REAL NOT NULL,
     PRIMARY KEY (chain, timestamp)
+);
+
+-- ЕТО Я И НОВАТА ТАБЛИЦА ЗА FOREX ДАННИ --
+CREATE TABLE IF NOT EXISTS forex_data (
+    symbol TEXT NOT NULL,
+    date TEXT NOT NULL,
+    open REAL,
+    high REAL,
+    low REAL,
+    close REAL,
+    adjusted_close REAL,
+    volume INTEGER,
+    PRIMARY KEY (symbol, date)
 );
 """
 

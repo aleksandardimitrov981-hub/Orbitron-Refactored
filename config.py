@@ -31,3 +31,5 @@ ASSETS_TO_TRACK = {
     'pudgy-penguins': 'pudgy-penguins',
     'dogs-2': 'dogs-2'
 }
+# Добави този ред при другите API ключове в config.py
+EODHD_API_KEY = os.getenv("EODHD_API_KEY")

@@ -18,7 +18,6 @@ class DatabaseManager:
 
     @contextmanager
     def managed_connection(self):
-        # ... (този код остава абсолютно същият) ...
         conn = None
         try:
             conn = sqlite3.connect(self.db_path)
@@ -33,11 +32,6 @@ class DatabaseManager:
         finally:
             if conn:
                 conn.close()
-
-    # --- МЕТОДИ ЗА ЗАПИС И ИЗВЛИЧАНЕ ---
-    # Всички методи до тук остават същите. 
-    # Прескачам ги за краткост, за да стигнем до новия метод.
-    # ... save_articles, get_unprocessed_articles, update_article_analysis, etc. ...
 
     def execute_script(self, script_sql: str):
         try:
@@ -90,6 +84,9 @@ class DatabaseManager:
             return 0
 
     def save_historical_prices(self, asset_symbol: str, klines: List[Dict[str, Any]]):
+        """
+        Записва или заменя исторически данни (свещи) за даден актив.
+        """
         sql = """
         INSERT OR REPLACE INTO historical_prices 
         (asset_symbol, timestamp, open, high, low, close, volume) 
@@ -110,7 +107,6 @@ class DatabaseManager:
             logging.error(f"❌ Грешка при запис на исторически данни за {asset_symbol}: {e}")
             return 0
 
-    # --- ТУК Е ДОБАВЕН НОВИЯТ МЕТОД ЗА DEFI LLAMA ---
     def save_chain_tvl_data(self, tvl_data: List[Dict[str, Any]]):
         """
         Записва или заменя TVL данни за различни блокчейн мрежи.
@@ -120,7 +116,6 @@ class DatabaseManager:
         (chain, timestamp, tvl) 
         VALUES (:chain, :timestamp, :tvl)
         """
-        # Данните от DefiLlamaHandler вече са в правилния формат
         try:
             with self.managed_connection() as conn:
                 cursor = conn.cursor()
@@ -131,31 +126,42 @@ class DatabaseManager:
             logging.error(f"❌ Грешка при запис на TVL данни: {e}")
             return 0
 
+    # --- ТУК Е ВЪЗСТАНОВЕНИЯТ МЕТОД ЗА FOREX ДАННИ ---
+    def save_forex_data(self, symbol: str, forex_records: List[Dict[str, Any]]):
+        """
+        Записва или заменя дневни Forex данни за даден символ.
+        """
+        sql = """
+        INSERT OR REPLACE INTO forex_data
+        (symbol, date, open, high, low, close, adjusted_close, volume)
+        VALUES (:symbol, :date, :open, :high, :low, :close, :adjusted_close, :volume)
+        """
+        data_to_insert = []
+        for record in forex_records:
+            entry = record.copy()
+            entry['symbol'] = symbol
+            data_to_insert.append(entry)
+        
+        try:
+            with self.managed_connection() as conn:
+                cursor = conn.cursor()
+                cursor.executemany(sql, data_to_insert)
+                logging.info(f"✅ Успешно записани/обновени {cursor.rowcount} записа за {symbol} в 'forex_data'.")
+                return cursor.rowcount
+        except sqlite3.Error as e:
+            logging.error(f"❌ Грешка при запис на Forex данни за {symbol}: {e}")
+            return 0
+            
     def get_latest_market_data_date(self, asset_id: str) -> str or None:
-        # ... (този код остава абсолютно същият) ...
+        """
+        Намира последната дата, за която имаме пазарни данни за даден актив.
+        """
         sql = "SELECT MAX(date) AS latest_date FROM market_data WHERE asset_id = ?"
         try:
             with self.managed_connection() as conn:
                 result = conn.execute(sql, (asset_id,)).fetchone()
+                # Връщаме датата, ако съществува, в противен случай None
                 return result['latest_date'] if result and result['latest_date'] else None
-        except sqlite3.Error:
+        except sqlite3.Error as e:
+            logging.error(f"❌ Error fetching latest market data date for {asset_id}: {e}")
             return None
-    
-    # --- МЕТОДИ ЗА ДАШБОРДА ---
-    def get_all_analyzed_articles(self) -> List[Dict[str, Any]]:
-        # ... (този код остава абсолютно същият) ...
-        sql = "SELECT * FROM articles WHERE sentiment IS NOT NULL ORDER BY published_at DESC"
-        try:
-            with self.managed_connection() as conn:
-                return conn.execute(sql).fetchall()
-        except sqlite3.Error:
-            return []
-
-    def get_all_market_data(self) -> List[Dict[str, Any]]:
-        # ... (този код остава абсолютно същият) ...
-        sql = "SELECT * FROM market_data ORDER BY date ASC"
-        try:
-            with self.managed_connection() as conn:
-                return conn.execute(sql).fetchall()
-        except sqlite3.Error:
-            return []
